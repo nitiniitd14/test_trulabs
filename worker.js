@@ -99,15 +99,14 @@ function Round() {
 }
 
 
-parentPort.once('message', (task) => {
-    const { simCount, winCombinations } = task; // Receive pre-calculated winCombinations
-    payCombinations = winCombinations; // Directly use the received data
+parentPort.on('message', (message) => {
+    const { simCount } = message;
     let totalOut = 0;
     let totalIn = 0;
-    for (let i = 0; i < task.simCount; i++) {
+    for (let i = 0; i < simCount; i++) {
         const roundResult = Round();
-        totalIn += config.coinRatio;
         totalOut += roundResult.totalWin;
+        totalIn += config.coinRatio; // Assuming coinRatio is a number in your config
     }
-    parentPort.postMessage({ totalOut, totalIn }); // Correctly send back calculated values
+    parentPort.postMessage({ totalOut, totalIn });
 });
